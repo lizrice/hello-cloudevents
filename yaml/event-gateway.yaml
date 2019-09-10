@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-gateway
+  labels:
+    app: event-gateway
+spec:
+  selector:
+    matchLabels:
+      app: event-gateway
+  template:
+    metadata:
+      labels:
+        app: event-gateway
+    spec:
+      containers:
+        - name: event-gateway
+          image: serverless/event-gateway
+          args:
+            - "-db-hosts=etcd:2379"
+            - "-log-format=text"
+            - "-log-level=debug"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: event-gateway
+spec:
+  ports:
+    - name: events
+      port: 4000
+      protocol: TCP
+      targetPort: 4000
+    - name: config
+      port: 4001
+      targetPort: 4001
+  selector:
+    app: event-gateway
