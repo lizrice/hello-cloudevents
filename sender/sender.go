@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/url"
 	"os"
@@ -16,8 +17,7 @@ type MessageEvent struct {
 
 func main() {
 
-	// Host:   "10.98.202.209:4000",
-	// Path:   "/hello",
+	// Create HTTP transport with the target receiver
 	host := os.Getenv("EVENT_RECEIVER_HOST")
 	path := os.Getenv("EVENT_RECEIVER_PATH")
 
@@ -27,35 +27,42 @@ func main() {
 		Path:   path,
 	}
 
-	m := MessageEvent{Message: "hello"}
-
-	log.Printf("Sending CloudEvent %v", m)
-
-	event := cloudevents.NewEvent()
-	event.SetID(uuid.New().String())
-	event.SetType("lizEvent")
-	event.SetSource("http://localhost:80/")
-	event.SetData(m)
-	event.SetDataContentType("application/json")
-
 	t, err := cloudevents.NewHTTPTransport(
 		cloudevents.WithTarget(u.String()),
 	)
 	if err != nil {
-		panic("failed to create transport, " + err.Error())
+		panic(fmt.Sprintf("failed to create transport: %v", err.Error()))
 	}
 
+	// Create cloud events client
 	c, err := cloudevents.NewClient(t)
 	if err != nil {
-		panic("unable to create cloudevent client: " + err.Error())
+		panic(fmt.Sprintf("unable to create cloudevent client: %v", err.Error()))
 	}
 
+	// Create an event
+	event := createAquaEvent()
+
+	// Send the event using the client
+	log.Printf("Sending CloudEvent %s", event.Data)
 	_, rsp, err := c.Send(context.Background(), event)
 	if err != nil {
-		log.Printf("failed to send cloudevent: " + err.Error())
+		log.Printf("failed to send cloudevent: %v", err.Error())
 	}
 
 	if rsp != nil {
 		log.Printf("Response %v", rsp)
 	}
+}
+
+func createAquaEvent() cloudevents.Event {
+	m := MessageEvent{Message: "hello"}
+
+	event := cloudevents.NewEvent()
+	event.SetID(uuid.New().String())
+	event.SetType("aquaEvent")
+	event.SetSource("http://localhost:80/")
+	event.SetDataContentType("application/json")
+	event.SetData(m)
+	return event
 }
