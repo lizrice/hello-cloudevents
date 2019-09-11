@@ -23,7 +23,7 @@
 
 * Subscribe the function to the event
 
-`curl --request POST --url http://$EVENT_GATEWAY_IP:4001/v1/spaces/default/subscriptions --header 'content-type: application/json' --data '{"functionId": "receiver", "event": "http", "type":"sync", "method": "GET", "eventType": "aquaEvent"}'`
+`curl --request POST --url http://$EVENT_GATEWAY_IP:4001/v1/spaces/default/subscriptions --header 'content-type: application/json' --data '{"functionId": "receiver", "event": "http", "type":"async", "eventType": "aquaEvent", "path": "/hello", "method": "POST"}'`
 
 * Get event types
 `curl --url http://$EVENT_GATEWAY_IP:4001/v1/spaces/default/eventtypes | jq`
