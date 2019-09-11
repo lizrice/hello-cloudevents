@@ -1,11 +1,15 @@
 # hello-cloudevents
 
+CloudEvents is a common format for events. This is a very simple demo showing how you can pass an event through an event gateway. 
+
 `receiver` receives an event
 `sender` generates an event
 
+Depending on environment variables `sender` can send directly to receiver, or via an event gateway. 
+
 ## Set up the event gateway
 
-
+The `yaml` directory has YAML for etcd and the event-gateway (which uses etcd for storage). 
 
 ## Event Gateway API
 
