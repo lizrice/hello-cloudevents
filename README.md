@@ -2,10 +2,16 @@
 
 CloudEvents is a common format for events. This is a very simple demo showing how you can pass an event through an event gateway. 
 
+## Executables
+
+These use https://github.com/cloudevents/sdk-go. 
+
 `receiver` receives an event
 `sender` generates an event
 
 Depending on environment variables `sender` can send directly to receiver, or via an event gateway. 
+
+Build with ```GOOS=linux go build .``` run in `sender` and `receiver` directories. 
 
 ## Set up the event gateway
 
@@ -40,4 +46,3 @@ The `yaml` directory has YAML for etcd and the event-gateway (which uses etcd fo
 * Get functions
 
 `curl --url http://$EVENT_GATEWAY_IP:4001/v1/spaces/default/functions | jq`
-
